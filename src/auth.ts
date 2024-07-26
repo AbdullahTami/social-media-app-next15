@@ -78,6 +78,8 @@ export const validateRequest = cache(
         );
       }
     } catch {}
+    console.log("error", result);
+
     return result;
   }
 );

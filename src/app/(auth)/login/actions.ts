@@ -41,7 +41,7 @@ export async function loginAction(
     const sessionCookie = lucia.createSessionCookie(session.id);
     cookies().set(
       sessionCookie.name,
-      sessionCookie.name,
+      sessionCookie.value,
       sessionCookie.attributes
     );
 
