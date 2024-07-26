@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { loginSchema, LoginSchema } from "@/lib/validation";
+import { loginSchema, LoginValues } from "@/lib/validation";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { verify } from "@node-rs/argon2";
 import { lucia } from "@/auth";
@@ -9,7 +9,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function loginAction(
-  credentials: LoginSchema
+  credentials: LoginValues
 ): Promise<{ error: string }> {
   try {
     const { username, password } = loginSchema.parse(credentials);
@@ -39,7 +39,6 @@ export async function loginAction(
 
     const session = await lucia.createSession(existingUser.id, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
-    // Automatic signup on registering
     cookies().set(
       sessionCookie.name,
       sessionCookie.name,

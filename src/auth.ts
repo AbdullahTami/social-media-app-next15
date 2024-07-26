@@ -14,7 +14,7 @@ export const lucia = new Lucia(adapter, {
       secure: process.env.NODE_ENV === "production",
     },
   },
-  getUserAttributes(databaseUserAttributes: DatabaseUserAttributes) {
+  getUserAttributes(databaseUserAttributes) {
     return {
       id: databaseUserAttributes.id,
       username: databaseUserAttributes.username,
@@ -58,6 +58,7 @@ export const validateRequest = cache(
     }
 
     const result = await lucia.validateSession(sessionId);
+    console.log("error", result);
 
     try {
       if (result.session && result.session.fresh) {

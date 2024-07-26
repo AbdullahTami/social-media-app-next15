@@ -1,15 +1,16 @@
 import { validateRequest } from "@/auth";
 import { redirect } from "next/navigation";
 import React from "react";
+import SessionProvider from "./SessionProvider";
 
 export default async function Layout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = await validateRequest();
+  const session = await validateRequest();
 
-  if (user) redirect("/");
+  if (!session.user) redirect("/login");
 
-  return <>{children}</>;
+  return <SessionProvider value={session}>{children}</SessionProvider>;
 }

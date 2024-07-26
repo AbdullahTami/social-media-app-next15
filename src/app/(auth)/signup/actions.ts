@@ -66,10 +66,9 @@ export async function signUpAction(
 
     const session = await lucia.createSession(userId, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
-    // Automatic signup on registering
     cookies().set(
       sessionCookie.name,
-      sessionCookie.name,
+      sessionCookie.value,
       sessionCookie.attributes
     );
     return redirect("/");
