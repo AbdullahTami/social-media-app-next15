@@ -78,7 +78,7 @@ export async function POST(
   }
 }
 
-export async function Delete(
+export async function DELETE(
   req: Request,
   { params: { userId } }: { params: { userId: string } }
 ) {
