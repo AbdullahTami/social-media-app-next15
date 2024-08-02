@@ -12,6 +12,7 @@
     "tanstack",
     "tiptap",
     "Unfollow",
-    "Uploadthing"
+    "Uploadthing",
+    "webp"
   ]
 }
