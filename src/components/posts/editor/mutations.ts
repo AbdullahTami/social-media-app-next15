@@ -1,4 +1,7 @@
+"use client";
+import { useSession } from "@/app/(main)/SessionProvider";
 import { useToast } from "@/components/ui/use-toast";
+import { PostsPage } from "@/lib/types";
 import {
   InfiniteData,
   QueryFilters,
@@ -6,16 +9,14 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { submitPostAction } from "./actions";
-import { PostsPage } from "@/lib/types";
-import { validateRequest } from "@/auth";
-import { useSession } from "@/app/(main)/SessionProvider";
 
 export function useSubmitPostMutation() {
   const { toast } = useToast();
 
+  const queryClient = useQueryClient();
+
   const { user } = useSession();
 
-  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: submitPostAction,
     onSuccess: async (newPost) => {
@@ -29,12 +30,14 @@ export function useSubmitPostMutation() {
           );
         },
       } satisfies QueryFilters;
+
       await queryClient.cancelQueries(queryFilter);
 
       queryClient.setQueriesData<InfiniteData<PostsPage, string | null>>(
         queryFilter,
         (oldData) => {
           const firstPage = oldData?.pages[0];
+
           if (firstPage) {
             return {
               pageParams: oldData.pageParams,
@@ -61,13 +64,14 @@ export function useSubmitPostMutation() {
         description: "Post created",
       });
     },
-    onError: (error) => {
-      console.log(error);
+    onError(error) {
+      console.error(error);
       toast({
         variant: "destructive",
-        description: "Failed to post. Please try again ",
+        description: "Failed to post. Please try again.",
       });
     },
   });
+
   return mutation;
 }

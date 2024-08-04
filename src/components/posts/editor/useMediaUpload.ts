@@ -27,10 +27,12 @@ export default function useMediaUpload() {
           }
         );
       });
+
       setAttachments((prev) => [
         ...prev,
         ...renamedFiles.map((file) => ({ file, isUploading: true })),
       ]);
+
       return renamedFiles;
     },
     onUploadProgress: setUploadProgress,
@@ -62,18 +64,22 @@ export default function useMediaUpload() {
     if (isUploading) {
       toast({
         variant: "destructive",
-        description: "Please wait for the current upload to finish",
+        description: "Please wait for the current upload to finish.",
       });
       return;
     }
+
     if (attachments.length + files.length > 5) {
       toast({
         variant: "destructive",
-        description: "You can only upload up tp 5 attachment a post",
+        description: "You can only upload up to 5 attachments per post.",
       });
+      return;
     }
+
     startUpload(files);
   }
+
   function removeAttachment(fileName: string) {
     setAttachments((prev) => prev.filter((a) => a.file.name !== fileName));
   }

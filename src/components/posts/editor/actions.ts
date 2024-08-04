@@ -7,11 +7,11 @@ import { createPostSchema } from "@/lib/validation";
 
 export async function submitPostAction(input: {
   content: string;
-  mediaId: string[];
+  mediaIds: string[];
 }) {
   const { user } = await validateRequest();
 
-  if (!user) throw Error("Unauthorized");
+  if (!user) throw new Error("Unauthorized");
 
   const { content, mediaIds } = createPostSchema.parse(input);
 
@@ -25,5 +25,6 @@ export async function submitPostAction(input: {
     },
     include: getPostDataInclude(user.id),
   });
+
   return newPost;
 }
