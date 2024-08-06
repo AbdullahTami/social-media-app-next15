@@ -40,10 +40,9 @@ export async function GET(
       likes: post._count.likes,
       isLikedByUser: !!post.likes.length,
     };
-
     return Response.json(data);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }
@@ -72,9 +71,10 @@ export async function POST(
       },
       update: {},
     });
+
     return new Response();
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }
@@ -96,8 +96,10 @@ export async function DELETE(
         postId,
       },
     });
+
+    return new Response();
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }
