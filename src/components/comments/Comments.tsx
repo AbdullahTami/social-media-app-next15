@@ -4,6 +4,8 @@ import CommentInput from "./CommentInput";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import kyInstance from "@/lib/ky";
 import Comment from "./Comment";
+import { Button } from "../ui/button";
+import { Loader2 } from "lucide-react";
 interface CommentsProps {
   post: PostData;
 }
@@ -31,6 +33,25 @@ export default function Comments({ post }: CommentsProps) {
   return (
     <div className="space-y-3">
       <CommentInput post={post} />
+      {hasNextPage && (
+        <Button
+          variant="link"
+          className="mx-auto block"
+          disabled={isFetching}
+          onClick={() => fetchNextPage()}
+        >
+          Load previous comments
+        </Button>
+      )}
+      {status === "pending" && <Loader2 className="mx-auto animate-spin" />}
+      {status === "success" && !comments.length && (
+        <p className="text-muted-foreground">No comments yet.</p>
+      )}
+      {status === "error" && (
+        <p className="text-destructive text-center">
+          An error occurred while loading comments.
+        </p>
+      )}
       <div className="divide-y">
         {comments.map((comment) => (
           <Comment key={comment.id} comment={comment} />
