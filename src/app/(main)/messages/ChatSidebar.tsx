@@ -6,7 +6,13 @@ export default function ChatSidebar() {
   const { user } = useSession();
   return (
     <div className="size-full flex flex-col border-e md:w-72">
-      <ChannelList />
+      <ChannelList
+        filters={{
+          type: "messaging",
+          members: { $in: [user.id] },
+        }}
+        showChannelSearch
+      />
     </div>
   );
 }
