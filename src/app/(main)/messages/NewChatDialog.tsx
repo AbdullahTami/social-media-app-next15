@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -11,9 +12,10 @@ import { useSession } from "../SessionProvider";
 import useDebounce from "@/hooks/useDebounce";
 import { UserResponse } from "stream-chat";
 import { DefaultSerializer } from "v8";
-import { useQuery } from "@tanstack/react-query";
-import { Check, SearchIcon, X } from "lucide-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Check, Loader2, SearchIcon, X } from "lucide-react";
 import UserAvatar from "@/components/UserAvatar";
+import LoadingButton from "@/components/LoadingButton";
 
 interface NewChatDialogProps {
   onOpenChange: (open: boolean) => void;
@@ -56,6 +58,33 @@ export default function NewChatDialog({
         { name: 1, username: 1 },
         { limit: 15 }
       ),
+  });
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const channel = client.channel("messaging", {
+        members: [loggedInUser.id, ...selectedUsers.map((u) => u.id)],
+        name:
+          selectedUsers.length > 1
+            ? loggedInUser.displayName +
+              ", " +
+              selectedUsers.map((u) => u.name).join(", ")
+            : undefined,
+      });
+      await channel.create();
+      return channel;
+    },
+    onSuccess: (channel) => {
+      setActiveChannel(channel);
+      onChatCreated();
+    },
+    onError: (error) => {
+      console.error("Error starting chat", error);
+      toast({
+        variant: "destructive",
+        description: "Error starting chat. Please try again",
+      });
+    },
   });
 
   return (
@@ -107,8 +136,28 @@ export default function NewChatDialog({
                   }}
                 />
               ))}
+            {isSuccess && !data.users.length && (
+              <p className="my-3 text-center text-muted-foreground">
+                No users found. Try a different name.
+              </p>
+            )}
+            {isFetching && <Loader2 className="mx-auto my-3 animate-spin" />}
+            {isError && (
+              <p className="my-3 text-center text-destructive">
+                An error occurred while loading users.
+              </p>
+            )}
           </div>
         </div>
+        <DialogFooter className="px-6 pb-6">
+          <LoadingButton
+            disabled={!selectedUsers.length}
+            loading={mutation.isPending}
+            onClick={() => mutation.mutate()}
+          >
+            Start chat
+          </LoadingButton>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
