@@ -7,6 +7,7 @@ import ReactQueryProvider from "./ReactQueryProvider";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { fileRouter } from "./api/uploadthing/core";
+import { Analytics } from "@vercel/analytics/react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -41,7 +42,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <Analytics /> {children}
           </ThemeProvider>
         </ReactQueryProvider>
         <Toaster />
